@@ -201,6 +201,9 @@ class Tapper:
 
         auth_url = await self.get_auth_url(proxy=proxy)
 
+        if not auth_url:
+            return
+
         while True:
             try:
                 if http_client.closed:
@@ -212,7 +215,9 @@ class Tapper:
                     http_client = aiohttp.ClientSession(headers=headers, connector=proxy_conn)
 
                 if time() - access_token_created_time >= 1800:
-                    profile_data, access_token = await self.login(http_client=http_client, auth_url=auth_url, proxy=proxy)
+                    profile_data, access_token = await self.login(http_client=http_client,
+                                                                  auth_url=auth_url,
+                                                                  proxy=proxy)
 
                     if not access_token:
                         continue
